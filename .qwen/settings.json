@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "WebFetch(play.google.com)",
+      "WebSearch",
+      "WebFetch(help.realbyteapps.com)",
+      "WebFetch(apps.apple.com)",
+      "Bash(taskkill *)",
+      "Bash(node *)",
+      "Bash(powershell *)",
+      "Bash(do *)",
+      "Bash(tasklist)",
+      "Bash(findstr *)"
+    ]
+  },
+  "$version": 3
+}
