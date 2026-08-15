@@ -80,7 +80,9 @@ function testBugReportMarkup() {
     assert.doesNotMatch(calendar, /formatDate\(t\.transaction_date, true\)/);
     assert.ok(categories.indexOf('<!-- Доходы -->') < categories.indexOf('<!-- Расходы -->'));
     assert.match(categoryModal, /category\?\.type \|\| TRANSACTION_TYPE\.INCOME/);
-    assert.match(styles, /\.bottom-nav-item\.active\s*{[^}]*color:\s*#FFFFFF;/s);
+    assert.match(styles, /\.bottom-nav-item\.active\s*{[^}]*color:\s*var\(--accent-dark\);[^}]*background:\s*transparent;/s);
+    assert.match(styles, /\.bottom-nav-item\.active::before\s*{[^}]*opacity:\s*1;/s);
+    assert.doesNotMatch(categoryModal, /💰\s*Доход|💸\s*Расход/);
     assert.match(styles, /#comparison-table-container\s*{[^}]*padding-bottom:/s);
     assert.match(index, /data-page="transactions"/);
     assert.match(transactionModal, /window\._setSelectedCategory\(null\)/);

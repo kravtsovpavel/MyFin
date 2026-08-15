@@ -27,11 +27,11 @@ function showCategoryModal(userId, category = null) {
                     <div class="transaction-type-toggle">
                         <button type="button" class="type-toggle-btn income ${isIncome ? 'active' : ''}"
                                 data-type="income">
-                            💰 Доход
+                            Доход
                         </button>
                         <button type="button" class="type-toggle-btn expense ${!isIncome ? 'active' : ''}"
                                 data-type="expense">
-                            💸 Расход
+                            Расход
                         </button>
                     </div>
                 </div>
