@@ -23,9 +23,9 @@ async function showTransactionModal(type = null, transaction = null) {
         console.error('Error loading categories:', error);
         // Пробуем из кэша
         const cached = Storage.getCategoriesCache(userId);
-        if (cached) {
-            expenseCategories = cached.filter(c => c.type === TRANSACTION_TYPE.EXPENSE);
-            incomeCategories = cached.filter(c => c.type === TRANSACTION_TYPE.INCOME);
+        if (cached?.data) {
+            expenseCategories = cached.data.filter(c => c.type === TRANSACTION_TYPE.EXPENSE);
+            incomeCategories = cached.data.filter(c => c.type === TRANSACTION_TYPE.INCOME);
         }
     }
 

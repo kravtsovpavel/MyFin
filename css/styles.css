@@ -323,11 +323,18 @@ ul, ol {
     min-width: 64px;
 }
 
-.bottom-nav-item:hover,
-.bottom-nav-item.active {
+.bottom-nav-item:hover {
     color: var(--accent-dark);
     background: linear-gradient(180deg, transparent 0%, var(--accent-light) 100%);
     border-radius: var(--border-radius-sm);
+}
+
+.bottom-nav-item.active {
+    color: #FFFFFF;
+    background: var(--accent-dark);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.35);
+    font-weight: 700;
 }
 
 .nav-icon {
@@ -359,7 +366,7 @@ ul, ol {
 
 .mobile-header-logo {
     width: 32px;
-    height: 27px;
+    height: 32px;
     flex-shrink: 0;
 }
 
@@ -1765,6 +1772,10 @@ ul, ol {
     margin: 0;
     overflow-x: hidden;
     padding: 0;
+}
+
+#comparison-table-container {
+    padding-bottom: var(--spacing-md);
 }
 
 #comparison-title {

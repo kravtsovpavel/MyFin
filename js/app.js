@@ -3,6 +3,10 @@
 // ========================================
 
 const App = {
+    _modalCloseHandler: null,
+    _modalEscHandler: null,
+    _modalOnClose: null,
+
     /**
      * Инициализация приложения
      */
@@ -67,6 +71,11 @@ const App = {
     showModal(content, onClose = null) {
         const overlay = document.getElementById('modal-overlay');
         const container = document.getElementById('modal-container');
+
+        // Удаляем обработчики предыдущего модального окна, если оно было
+        // закрыто кнопкой, а не кликом по фону или клавишей Escape.
+        this._removeModalHandlers();
+        this._modalOnClose = onClose;
         
         container.innerHTML = content;
         overlay.style.display = 'flex';
@@ -74,36 +83,53 @@ const App = {
         // Обработчик закрытия по клику на overlay
         const closeHandler = (e) => {
             if (e.target === overlay) {
-                this.closeModal();
-                if (onClose) onClose();
+                this.closeModal(true);
             }
         };
-        
-        overlay.addEventListener('click', closeHandler, { once: true });
+
+        this._modalCloseHandler = closeHandler;
+        overlay.addEventListener('click', closeHandler);
         
         // Закрытие по ESC
         const escHandler = (e) => {
             if (e.key === 'Escape') {
-                this.closeModal();
-                if (onClose) onClose();
-                document.removeEventListener('keydown', escHandler);
+                this.closeModal(true);
             }
         };
+        this._modalEscHandler = escHandler;
         document.addEventListener('keydown', escHandler);
+    },
+
+    _removeModalHandlers() {
+        const overlay = document.getElementById('modal-overlay');
+        if (this._modalCloseHandler && overlay) {
+            overlay.removeEventListener('click', this._modalCloseHandler);
+        }
+        if (this._modalEscHandler) {
+            document.removeEventListener('keydown', this._modalEscHandler);
+        }
+        this._modalCloseHandler = null;
+        this._modalEscHandler = null;
     },
 
     /**
      * Закрыть модальное окно
      */
-    closeModal() {
+    closeModal(invokeCallback = false) {
         const overlay = document.getElementById('modal-overlay');
         const container = document.getElementById('modal-container');
+
+        const onClose = invokeCallback ? this._modalOnClose : null;
+        this._removeModalHandlers();
+        this._modalOnClose = null;
 
         // Очищаем состояния всех календарей в модалке
         CustomDatePicker.destroy('transaction-date-picker');
 
         overlay.style.display = 'none';
         container.innerHTML = '';
+
+        if (onClose) onClose();
     },
 
     /**

@@ -6,7 +6,7 @@
     <title>MyFin</title>
     
     <!-- Фавикон -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%231E88E5'/><stop offset='100%25' style='stop-color:%230D47A1'/></linearGradient></defs><rect width='120' height='100' rx='22' fill='url(%23g)'/><text x='60' y='44' font-family='Arial,sans-serif' font-size='24' font-weight='bold' fill='%23FFC107' text-anchor='middle'>My</text><text x='60' y='74' font-family='Arial,sans-serif' font-size='24' font-weight='bold' fill='white' text-anchor='middle'>Fin</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%231E88E5'/><stop offset='100%25' style='stop-color:%230D47A1'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><text x='50' y='44' font-family='Arial,sans-serif' font-size='24' font-weight='bold' fill='%23FFC107' text-anchor='middle'>My</text><text x='50' y='74' font-family='Arial,sans-serif' font-size='24' font-weight='bold' fill='white' text-anchor='middle'>Fin</text></svg>">
 
     <!-- Google Fonts: Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,23 +23,23 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <!-- Стили -->
-    <link rel="stylesheet" href="css/styles.css?v=10">
+    <link rel="stylesheet" href="css/styles.css?v=11">
 </head>
 <body>
     <!-- Экран входа -->
     <div id="login-screen" class="login-screen">
         <div class="login-content">
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
-                <svg viewBox="0 0 120 100" width="60" height="50">
+                <svg viewBox="0 0 100 100" width="60" height="60">
                     <defs>
                         <linearGradient id="loginGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#1E88E5"/>
                             <stop offset="100%" style="stop-color:#0D47A1"/>
                         </linearGradient>
                     </defs>
-                    <rect width="120" height="100" rx="22" fill="url(#loginGrad)"/>
-                    <text x="60" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
-                    <text x="60" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
+                    <rect width="100" height="100" rx="22" fill="url(#loginGrad)"/>
+                    <text x="50" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
+                    <text x="50" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
                 </svg>
                 <h1 class="login-title">MyFin</h1>
             </div>
@@ -61,16 +61,16 @@
         <!-- Верхняя навигация (desktop) -->
         <nav class="top-nav">
             <div class="nav-brand">
-                <svg class="nav-brand-icon" viewBox="0 0 120 100" width="40" height="33">
+                <svg class="nav-brand-icon" viewBox="0 0 100 100" width="36" height="36">
                     <defs>
                         <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#1E88E5"/>
                             <stop offset="100%" style="stop-color:#0D47A1"/>
                         </linearGradient>
                     </defs>
-                    <rect width="120" height="100" rx="22" fill="url(#brandGrad)"/>
-                    <text x="60" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
-                    <text x="60" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
+                    <rect width="100" height="100" rx="22" fill="url(#brandGrad)"/>
+                    <text x="50" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
+                    <text x="50" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
                 </svg>
                 <span class="nav-brand-text">MyFin</span>
             </div>
@@ -129,22 +129,22 @@
 
     <!-- Скрипты -->
     <script src="js/config.js?v=4"></script>
-    <script src="js/auth.js?v=4"></script>
+    <script src="js/auth.js?v=5"></script>
     <script src="js/storage.js?v=4"></script>
-    <script src="js/api.js?v=4"></script>
+    <script src="js/api.js?v=5"></script>
     <script src="js/utils.js?v=5"></script>
     <script src="js/datepicker.js?v=5"></script>
     <script src="js/router.js?v=5"></script>
     <script src="js/pages/login.js?v=5"></script>
     <script src="js/pages/dashboard.js?v=5"></script>
-    <script src="js/pages/analytics.js?v=15"></script>
-    <script src="js/pages/calendar.js?v=4"></script>
-    <script src="js/pages/transactions.js?v=12"></script>
-    <script src="js/modals/category.js?v=6"></script>
-    <script src="js/pages/categories.js?v=6"></script>
-    <script src="js/pages/settings.js?v=5"></script>
-    <script src="js/modals/transaction.js?v=4"></script>
+    <script src="js/pages/analytics.js?v=16"></script>
+    <script src="js/pages/calendar.js?v=5"></script>
+    <script src="js/pages/transactions.js?v=13"></script>
+    <script src="js/modals/category.js?v=7"></script>
+    <script src="js/pages/categories.js?v=7"></script>
+    <script src="js/pages/settings.js?v=6"></script>
+    <script src="js/modals/transaction.js?v=5"></script>
     <script src="js/modals/budget.js?v=4"></script>
-    <script src="js/app.js?v=4"></script>
+    <script src="js/app.js?v=5"></script>
 </body>
 </html>

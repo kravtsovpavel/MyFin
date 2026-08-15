@@ -12,16 +12,16 @@ async function renderCategories() {
     mainContent.innerHTML = `
         <!-- Мобильный хедер -->
         <div class="mobile-header">
-            <svg class="mobile-header-logo" viewBox="0 0 120 100">
+            <svg class="mobile-header-logo" viewBox="0 0 100 100">
                 <defs>
                     <linearGradient id="mobHeaderGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#1E88E5"/>
                         <stop offset="100%" style="stop-color:#0D47A1"/>
                     </linearGradient>
                 </defs>
-                <rect width="120" height="100" rx="22" fill="url(#mobHeaderGrad5)"/>
-                <text x="60" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
-                <text x="60" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
+                <rect width="100" height="100" rx="22" fill="url(#mobHeaderGrad5)"/>
+                <text x="50" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
+                <text x="50" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
             </svg>
             <span class="mobile-header-title">Категории</span>
         </div>
@@ -31,18 +31,18 @@ async function renderCategories() {
                 <button id="add-category-btn" class="btn btn-primary">+ Категория</button>
             </div>
 
-            <!-- Расходы -->
-            <div class="category-section">
-                <h3 class="category-section-title">Расходы</h3>
-                <div id="expense-categories-list" class="categories-list">
-                    <div class="text-center text-secondary py-lg">Загрузка...</div>
-                </div>
-            </div>
-
             <!-- Доходы -->
             <div class="category-section">
                 <h3 class="category-section-title">Доходы</h3>
                 <div id="income-categories-list" class="categories-list">
+                    <div class="text-center text-secondary py-lg">Загрузка...</div>
+                </div>
+            </div>
+
+            <!-- Расходы -->
+            <div class="category-section">
+                <h3 class="category-section-title">Расходы</h3>
+                <div id="expense-categories-list" class="categories-list">
                     <div class="text-center text-secondary py-lg">Загрузка...</div>
                 </div>
             </div>
@@ -81,9 +81,9 @@ async function loadCategories(userId) {
 
         // Пробуем из кэша
         const cached = Storage.getCategoriesCache(userId);
-        if (cached) {
-            const expenseCategories = cached.filter(c => c.type === TRANSACTION_TYPE.EXPENSE);
-            const incomeCategories = cached.filter(c => c.type === TRANSACTION_TYPE.INCOME);
+        if (cached?.data) {
+            const expenseCategories = cached.data.filter(c => c.type === TRANSACTION_TYPE.EXPENSE);
+            const incomeCategories = cached.data.filter(c => c.type === TRANSACTION_TYPE.INCOME);
             renderCategoryList('expense-categories-list', expenseCategories, userId);
             renderCategoryList('income-categories-list', incomeCategories, userId);
         } else {
@@ -154,7 +154,7 @@ function renderCategoryList(containerId, categories, userId) {
  */
 function showCategoryModal(userId, category = null) {
     const isEdit = !!category;
-    const isExpense = category ? category.type === TRANSACTION_TYPE.EXPENSE : true;
+    const isIncome = category ? category.type === TRANSACTION_TYPE.INCOME : true;
 
     const html = `
         <div class="modal-header">
@@ -164,19 +164,19 @@ function showCategoryModal(userId, category = null) {
         <div class="modal-body">
             <form id="category-form">
                 <input type="hidden" id="category-id" value="${category?.id || ''}">
-                <input type="hidden" id="category-type" value="${category?.type || TRANSACTION_TYPE.EXPENSE}">
+                <input type="hidden" id="category-type" value="${category?.type || TRANSACTION_TYPE.INCOME}">
 
                 ${!isEdit ? `
                 <div class="form-group">
                     <label class="form-label">Тип категории</label>
                     <div class="transaction-type-toggle">
-                        <button type="button" class="type-toggle-btn expense ${isExpense ? 'active' : ''}"
-                                data-type="expense">
-                            Расход
-                        </button>
-                        <button type="button" class="type-toggle-btn income ${!isExpense ? 'active' : ''}"
+                        <button type="button" class="type-toggle-btn income ${isIncome ? 'active' : ''}"
                                 data-type="income">
                             Доход
+                        </button>
+                        <button type="button" class="type-toggle-btn expense ${!isIncome ? 'active' : ''}"
+                                data-type="expense">
+                            Расход
                         </button>
                     </div>
                 </div>
@@ -224,7 +224,7 @@ function showCategoryModal(userId, category = null) {
  */
 function setupCategoryModalHandlers(userId, category = null) {
     const isEdit = !!category;
-    let selectedType = category?.type || TRANSACTION_TYPE.EXPENSE;
+    let selectedType = category?.type || TRANSACTION_TYPE.INCOME;
 
     // Выбор типа (только при создании)
     if (!isEdit) {
@@ -258,8 +258,13 @@ function setupCategoryModalHandlers(userId, category = null) {
                 App.showToast('Категория обновлена', 'success');
             } else {
                 const count = await API.getCategoryCount(userId, selectedType);
-                if (count >= APP_CONFIG.MAX_EXPENSE_CATEGORIES) {
-                    App.showToast(`Максимум ${APP_CONFIG.MAX_EXPENSE_CATEGORIES} категорий`, 'error');
+                const maxCategories = selectedType === TRANSACTION_TYPE.INCOME
+                    ? APP_CONFIG.MAX_INCOME_CATEGORIES
+                    : APP_CONFIG.MAX_EXPENSE_CATEGORIES;
+                if (count >= maxCategories) {
+                    App.showToast(`Максимум ${maxCategories} категорий`, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Сохранить';
                     return;
                 }
 

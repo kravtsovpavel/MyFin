@@ -49,6 +49,36 @@ const API = {
     },
 
     /**
+     * Получить профиль или создать его, если серверный триггер не сработал.
+     * Это позволяет новым OAuth-пользователям начать работу без ручной
+     * подготовки записи в profiles.
+     */
+    async getOrCreateProfile(user) {
+        const { data: existingProfile, error: selectError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        if (selectError) throw selectError;
+        if (existingProfile) return existingProfile;
+
+        const email = user.email || user.user_metadata?.email;
+        if (!email) {
+            throw new Error('Не удалось получить email пользователя');
+        }
+
+        const { data: createdProfile, error: insertError } = await supabase
+            .from('profiles')
+            .upsert({ id: user.id, email }, { onConflict: 'id' })
+            .select()
+            .single();
+
+        if (insertError) throw insertError;
+        return createdProfile;
+    },
+
+    /**
      * Обновить профиль пользователя
      */
     async updateProfile(userId, updates) {
@@ -142,14 +172,14 @@ const API = {
      * Получить количество категорий по типу
      */
     async getCategoryCount(userId, type) {
-        const { data, error } = await supabase
+        const { count, error } = await supabase
             .from('categories')
             .select('id', { count: 'exact', head: true })
             .eq('user_id', userId)
             .eq('type', type);
         
         if (error) throw error;
-        return data;
+        return count || 0;
     },
 
     /**
@@ -242,14 +272,14 @@ const API = {
         }
 
         const offset = (page - 1) * perPage;
-        const { data, error } = await query
+        const { data, count, error } = await query
             .order('transaction_date', { ascending: false })
             .range(offset, offset + perPage - 1);
 
         if (error) throw error;
         return {
             data: data || [],
-            total: error?.details?.total || 0
+            total: count || 0
         };
     },
 

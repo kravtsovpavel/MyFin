@@ -26,7 +26,7 @@ const Auth = {
                 
                 // Получаем профиль пользователя
                 try {
-                    const profile = await API.getProfile(session.user.id);
+                    const profile = await API.getOrCreateProfile(session.user);
                     this.currentUser.profile = profile;
                     
                     // Кэшируем профиль
@@ -40,40 +40,41 @@ const Auth = {
         }
 
         // Слушаем изменения авторизации
-        supabase.auth.onAuthStateChange(async (event, session) => {
+        supabase.auth.onAuthStateChange((event, session) => {
             console.log('Auth state changed:', event);
-            
-            if (event === 'SIGNED_IN' && session) {
-                this.currentUser = session.user;
-                this.currentSession = session;
-                
-                // Получаем профиль
-                try {
-                    const profile = await API.getProfile(session.user.id);
-                    this.currentUser.profile = profile;
-                    Storage.setProfileCache(session.user.id, profile);
-                } catch (error) {
-                    console.error('Error fetching profile after sign in:', error);
-                }
-                
-                // Показываем приложение
-                App.showApp();
-            } else if (event === 'SIGNED_OUT') {
-                this.currentUser = null;
-                this.currentSession = null;
-                
-                // Очищаем кэш
-                Storage.clearMyFinCache();
-                
-                // Показываем экран входа
-                App.showLogin();
-            }
+
+            // Supabase не рекомендует выполнять другие клиентские запросы
+            // непосредственно внутри callback onAuthStateChange: они могут
+            // ждать завершения текущего события. Выносим работу в новую задачу.
+            setTimeout(() => this.handleAuthStateChange(event, session), 0);
         });
 
         // Если сессия есть, показываем приложение
         if (this.currentUser) {
             App.showApp();
         } else {
+            App.showLogin();
+        }
+    },
+
+    async handleAuthStateChange(event, session) {
+        if (event === 'SIGNED_IN' && session) {
+            this.currentUser = session.user;
+            this.currentSession = session;
+
+            try {
+                const profile = await API.getOrCreateProfile(session.user);
+                this.currentUser.profile = profile;
+                Storage.setProfileCache(session.user.id, profile);
+            } catch (error) {
+                console.error('Error fetching profile after sign in:', error);
+            }
+
+            App.showApp();
+        } else if (event === 'SIGNED_OUT') {
+            this.currentUser = null;
+            this.currentSession = null;
+            Storage.clearMyFinCache();
             App.showLogin();
         }
     },

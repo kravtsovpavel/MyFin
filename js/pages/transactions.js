@@ -9,6 +9,7 @@ let currentFilters = {
     dateFrom: null,
     dateTo: null
 };
+let currentPageTransactions = [];
 
 /**
  * Рендер страницы всех операций
@@ -24,16 +25,16 @@ async function renderTransactions() {
     mainContent.innerHTML = `
         <!-- Мобильный хедер -->
         <div class="mobile-header">
-            <svg class="mobile-header-logo" viewBox="0 0 120 100">
+            <svg class="mobile-header-logo" viewBox="0 0 100 100">
                 <defs>
                     <linearGradient id="mobHeaderGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#1E88E5"/>
                         <stop offset="100%" style="stop-color:#0D47A1"/>
                     </linearGradient>
                 </defs>
-                <rect width="120" height="100" rx="22" fill="url(#mobHeaderGrad4)"/>
-                <text x="60" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
-                <text x="60" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
+                <rect width="100" height="100" rx="22" fill="url(#mobHeaderGrad4)"/>
+                <text x="50" y="44" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#FFC107" text-anchor="middle">My</text>
+                <text x="50" y="74" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">Fin</text>
                 
             </svg>
             <span class="mobile-header-title">Операции</span>
@@ -212,6 +213,7 @@ async function loadTransactions(userId, currency) {
     try {
         const result = await API.getTransactionsPaginated(userId, currentFilters);
         const transactions = result.data || [];
+        currentPageTransactions = transactions;
         
         if (transactions.length === 0) {
             list.innerHTML = `
@@ -387,13 +389,7 @@ function setupTransactionsHandlers(userId, currency) {
         const item = e.target.closest('.transaction-item');
         if (item) {
             const transactionId = item.dataset.id;
-            // Получаем транзакцию из кэша или загружаем
-            const cached = Storage.getTransactionsCache(userId);
-            let transaction = null;
-            
-            if (cached && cached.data) {
-                transaction = cached.data.find(t => t.id === transactionId);
-            }
+            const transaction = currentPageTransactions.find(t => t.id === transactionId);
             
             if (transaction) {
                 showTransactionModal(null, transaction);

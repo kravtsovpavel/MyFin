@@ -9,7 +9,7 @@
  */
 function showCategoryModal(userId, category = null) {
     const isEdit = !!category;
-    const isExpense = category ? category.type === TRANSACTION_TYPE.EXPENSE : true;
+    const isIncome = category ? category.type === TRANSACTION_TYPE.INCOME : true;
 
     const html = `
         <div class="modal-header">
@@ -19,19 +19,19 @@ function showCategoryModal(userId, category = null) {
         <div class="modal-body">
             <form id="category-form">
                 <input type="hidden" id="category-id" value="${category?.id || ''}">
-                <input type="hidden" id="category-type" value="${category?.type || TRANSACTION_TYPE.EXPENSE}">
+                <input type="hidden" id="category-type" value="${category?.type || TRANSACTION_TYPE.INCOME}">
 
                 ${!isEdit ? `
                 <div class="form-group">
                     <label class="form-label">Тип категории</label>
                     <div class="transaction-type-toggle">
-                        <button type="button" class="type-toggle-btn expense ${isExpense ? 'active' : ''}"
-                                data-type="expense">
-                            💸 Расход
-                        </button>
-                        <button type="button" class="type-toggle-btn income ${!isExpense ? 'active' : ''}"
+                        <button type="button" class="type-toggle-btn income ${isIncome ? 'active' : ''}"
                                 data-type="income">
                             💰 Доход
+                        </button>
+                        <button type="button" class="type-toggle-btn expense ${!isIncome ? 'active' : ''}"
+                                data-type="expense">
+                            💸 Расход
                         </button>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ function showCategoryModal(userId, category = null) {
  */
 function setupCategoryModalHandlers(userId, category = null) {
     const isEdit = !!category;
-    let selectedType = category?.type || TRANSACTION_TYPE.EXPENSE;
+    let selectedType = category?.type || TRANSACTION_TYPE.INCOME;
 
     // Выбор типа (только при создании)
     if (!isEdit) {
@@ -116,8 +116,13 @@ function setupCategoryModalHandlers(userId, category = null) {
                 App.showToast('Категория обновлена', 'success');
             } else {
                 const count = await API.getCategoryCount(userId, type);
-                if (count >= APP_CONFIG.MAX_EXPENSE_CATEGORIES) {
-                    App.showToast(`Максимум ${APP_CONFIG.MAX_EXPENSE_CATEGORIES} категорий`, 'error');
+                const maxCategories = type === TRANSACTION_TYPE.INCOME
+                    ? APP_CONFIG.MAX_INCOME_CATEGORIES
+                    : APP_CONFIG.MAX_EXPENSE_CATEGORIES;
+                if (count >= maxCategories) {
+                    App.showToast(`Максимум ${maxCategories} категорий`, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Сохранить';
                     return;
                 }
 
