@@ -207,7 +207,7 @@ function setupTransactionModalHandlers(userId, transaction = null, expenseCatego
 
             // Обновляем список категорий
             const categories = selectedType === TRANSACTION_TYPE.INCOME ? incomeCategories : expenseCategories;
-            selectedCategoryId = null;
+            window._setSelectedCategory(null);
 
             const selector = document.getElementById('category-selector');
             if (selector) {
@@ -231,7 +231,7 @@ function setupTransactionModalHandlers(userId, transaction = null, expenseCatego
             
             document.querySelectorAll('#category-selector .category-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            selectedCategoryId = btn.dataset.id;
+            window._setSelectedCategory(btn.dataset.id);
         });
     });
 
@@ -268,7 +268,7 @@ function setupTransactionModalHandlers(userId, transaction = null, expenseCatego
         }
 
         // Проверка категории
-        const currentSelectedCategory = window._selectedCategoryId || selectedCategoryId;
+        const currentSelectedCategory = selectedCategoryId;
         if (!currentSelectedCategory) {
             App.showToast('Выберите категорию', 'error');
             return;

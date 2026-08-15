@@ -4,6 +4,17 @@
 
 const Utils = {
     /**
+     * Разобрать дату без смещения календарного дня из-за UTC.
+     */
+    parseDate(date) {
+        if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            const [year, month, day] = date.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }
+        return new Date(date);
+    },
+
+    /**
      * Форматирование суммы
      * @param {number} amount - сумма
      * @param {string} currency - валюта
@@ -26,7 +37,7 @@ const Utils = {
      * @returns {string}
      */
     formatDate(date, withTime = false) {
-        const d = new Date(date);
+        const d = this.parseDate(date);
         const day = String(d.getDate()).padStart(2, '0');
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const year = d.getFullYear();
@@ -46,7 +57,7 @@ const Utils = {
      * @returns {string}
      */
     formatDateForInput(date) {
-        const d = new Date(date);
+        const d = this.parseDate(date);
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
@@ -217,7 +228,7 @@ const Utils = {
      * @returns {boolean}
      */
     isToday(date) {
-        const d = new Date(date);
+        const d = this.parseDate(date);
         const today = new Date();
         return d.getDate() === today.getDate() &&
                d.getMonth() === today.getMonth() &&
@@ -232,7 +243,7 @@ const Utils = {
      * @returns {boolean}
      */
     isPreviousMonth(date, year, month) {
-        const d = new Date(date);
+        const d = this.parseDate(date);
         const { year: prevYear, month: prevMonth } = this.getPreviousMonth(year, month);
         return d.getFullYear() === prevYear && (d.getMonth() + 1) === prevMonth;
     },

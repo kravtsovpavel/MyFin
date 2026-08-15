@@ -276,7 +276,7 @@ async function renderLineChart(userId) {
 
     // Для годового периода - данные по месяцам
     if (currentPeriod === 'year') {
-        const year = new Date(startDate).getFullYear();
+        const year = Utils.parseDate(startDate).getFullYear();
         labels = [];
         incomeData = [];
         expenseData = [];
@@ -304,8 +304,8 @@ async function renderLineChart(userId) {
         // Для месяца и недели - данные по дням
         const byDay = await API.getTransactionsByDay(userId, startDate, endDate);
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start = Utils.parseDate(startDate);
+        const end = Utils.parseDate(endDate);
         labels = [];
         incomeData = [];
         expenseData = [];

@@ -178,14 +178,14 @@ CREATE TRIGGER update_transactions_updated_at
 CREATE OR REPLACE FUNCTION create_profile_for_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO profiles (id, email, display_name, currency, week_start)
+    INSERT INTO public.profiles (id, email, display_name, currency, week_start)
     VALUES (NEW.id, NEW.email, NULL, 'RUB', 'monday')
     ON CONFLICT (id) DO UPDATE
     SET email = EXCLUDED.email,
         updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
@@ -213,12 +213,12 @@ BEGIN
         COALESCE(SUM(CASE WHEN t.type = 'income' THEN t.amount ELSE 0 END), 0) AS total_income,
         COALESCE(SUM(CASE WHEN t.type = 'expense' THEN t.amount ELSE 0 END), 0) AS total_expense,
         COALESCE(SUM(CASE WHEN t.type = 'income' THEN t.amount ELSE -t.amount END), 0) AS balance
-    FROM transactions t
+    FROM public.transactions t
     WHERE t.user_id = p_user_id
       AND EXTRACT(YEAR FROM t.transaction_date) = p_year
       AND EXTRACT(MONTH FROM t.transaction_date) = p_month;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY INVOKER SET search_path = public;
 
 -- ========================================
 -- Проверка после создания скрипта
